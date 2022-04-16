@@ -1,0 +1,22 @@
+{
+  "name": "todo-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "client": "npm run serve --prefix client",
+    "server": "nodemon index",
+    "dev": "concurrently \"npm run client\" \"npm run server\"",
+    "prod": "cross-env-shell NODE_ENV=production \"node index\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.1.0",
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "config": "^3.3.7",
+    "express": "^4.17.3",
+    "mongoose": "^6.3.0"
+  }
+}
