@@ -36,4 +36,21 @@ router.post('/create', authMiddleware, async (req, res) => {
   }
 })
 
+router.post('/remove', authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.body
+    if (!id) return res.status(400).json({ error: 'Incorrect todo id' })
+
+    const { user } = req
+    if (!user) return
+
+    user.todos = user.todos.filter((todo) => todo.id !== id)
+    await user.save()
+
+    return res.send({ success: true })
+  } catch (e) {
+    console.error(e)
+  }
+})
+
 module.exports = router

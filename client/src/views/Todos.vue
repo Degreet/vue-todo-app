@@ -10,7 +10,7 @@
     <ul v-else class="todos__list">
       <li v-for="todo in todos" :key="todo.id" class="todos__item z-depth-1">
         <span>{{ todo.title }}</span>
-        <button class="todos__item-remove-btn">&times;</button>
+        <button @click="removeTodo(todo.id)" class="todos__item-remove-btn">&times;</button>
       </li>
     </ul>
   </div>
@@ -31,6 +31,12 @@ export default {
       const title = this.newTodoTitle
       if (!title || !title.trim()) return
 
+      const tempId = Math.floor(Math.random() * 999999)
+      const todo = { id: tempId, title: title.trim() }
+
+      this.todos.unshift(todo)
+      this.newTodoTitle = ''
+
       try {
         const { data } = await axios.post(
           '/todos/create',
@@ -38,8 +44,21 @@ export default {
           { headers: { Authorization: `Bearer ${this.$store.state.token}` } }
         )
 
-        this.todos.unshift({ id: data.id, title: title.trim() })
-        this.newTodoTitle = ''
+        todo.id = data.id
+      } catch (e) {
+        console.error(e)
+        window.M.toast({ html: e.response.data.error })
+      }
+    },
+    async removeTodo(id) {
+      this.todos = this.todos.filter((todo) => todo.id !== id)
+
+      try {
+        await axios.post(
+          '/todos/remove',
+          { id },
+          { headers: { Authorization: `Bearer ${this.$store.state.token}` } }
+        )
       } catch (e) {
         console.error(e)
         window.M.toast({ html: e.response.data.error })
