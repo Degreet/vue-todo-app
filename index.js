@@ -10,6 +10,7 @@ void (async () => {
   await db.connect(config.get('mongoUri'))
 
   app.use('/auth', require('./routes/auth.routes'))
+  app.use('/todos', require('./routes/todos.routes'))
 })()
 
 app.listen(config.get('port'), () => console.log('started', config.get('port')))

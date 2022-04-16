@@ -41,7 +41,7 @@ export default {
 
         if (!data.success) return
         this.login(data.token)
-        this.$router.push('/')
+        this.$router.push('/todos')
       } catch (e) {
         console.error(e.response.data.error)
         window.M.toast({ html: e.response.data.error })
