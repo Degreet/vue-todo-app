@@ -1,4 +1,6 @@
-const { body, validationResult } = require('express-validator')
+const validationMiddleware = require('../middlewares/validation.middleware')
+
+const { body } = require('express-validator')
 const User = require('../models/User')
 
 const jwt = require('jsonwebtoken')
@@ -10,13 +12,11 @@ const router = Router()
 
 router.post(
   '/reg',
-  body('email').isEmail(),
-  body('password').isLength({ min: 8 }),
+  body('email', 'Wrong email format').isEmail(),
+  body('password', 'Wrong password format').isLength({ min: 8 }),
+  validationMiddleware,
   async (req, res) => {
     try {
-      const errors = validationResult(req)
-      if (!errors.isEmpty())
-        return res.status(400).json({ success: false, error: errors.array()[0] })
 
       let { email, password } = req.body
       const candidate = await User.findOne({ email })
@@ -29,6 +29,32 @@ router.post(
 
       const token = jwt.sign(
         { userId: user._id.toString() },
+        config.get('privateKey'),
+        { expiresIn: '2h' }
+      )
+
+      res.json({ success: true, token })
+    } catch (e) {
+      console.error(e)
+    }
+  }
+)
+
+router.post(
+  '/login',
+  body('email', 'Wrong email format').isEmail(),
+  body('password', 'Wrong password format').isLength({ min: 8 }),
+  validationMiddleware,
+  async (req, res) => {
+    try {
+      const { email, password } = req.body
+      const candidate = await User.findOne({ email })
+
+      if (!candidate || !(await bcrypt.compare(password, candidate.password)))
+        return res.status(400).json({ success: false, error: 'User not found' })
+
+      const token = jwt.sign(
+        { userId: candidate._id.toString() },
         config.get('privateKey'),
         { expiresIn: '2h' }
       )

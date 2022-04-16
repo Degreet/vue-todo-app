@@ -15,7 +15,12 @@ export default createStore({
       localStorage.token = token
       commit('updateToken', token)
       commit('setIsAuth')
-    }
+    },
+    logOut({ commit }) {
+      localStorage.clear()
+      commit('updateToken', null)
+      window.location.reload()
+    },
   },
   modules: {
   },

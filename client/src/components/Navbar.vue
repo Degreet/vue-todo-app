@@ -7,6 +7,7 @@
           <li><router-link to="/">Home</router-link></li>
           <li v-if="!isAuth"><router-link to="/reg">Sign up</router-link></li>
           <li v-if="!isAuth"><router-link to="/login">Log in</router-link></li>
+          <li v-if="isAuth"><a href="#" @click="logOut">Log out</a></li>
         </ul>
       </div>
     </div>
@@ -14,13 +15,16 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: "Navbar",
   computed: {
     ...mapState(['isAuth']),
-  }
+  },
+  methods: {
+    ...mapActions(['logOut']),
+  },
 }
 </script>
 

@@ -20,6 +20,11 @@ export default {
   mounted() {
     this.loadToken()
     this.setIsAuth()
+  },
+  watch: {
+    '$route': () => {
+      setTimeout(() => window.M.updateTextFields())
+    }
   }
 }
 </script>
