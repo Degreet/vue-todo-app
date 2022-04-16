@@ -4,6 +4,8 @@ const db = require('./core/db')
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 void (async () => {
   await db.connect(config.get('mongoUri'))
 
